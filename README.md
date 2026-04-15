@@ -33,3 +33,5 @@ python model.py
 ---
 
 ⭐ If you like this project, feel free to star it!
+Built using Streamlit and deployed on cloud
+Live Demo: https://your-app.streamlit.app
