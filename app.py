@@ -6,8 +6,8 @@ from sklearn.preprocessing import LabelEncoder
 
 st.set_page_config(page_title="Tennis Predictor", layout="centered")
 
-st.title("🎾 Tennis Match Predictor")
-st.write("Predict match outcome using ML")
+st.title("🎾 Tennis Match Predictor (Pro)")
+st.write("Select players and get match prediction with confidence")
 
 df = pd.read_csv("atp_tennis.csv")
 
@@ -37,19 +37,25 @@ X['surface'] = encoder.fit_transform(X['surface'])
 model = RandomForestClassifier(n_estimators=400, random_state=42)
 model.fit(X, y)
 
-st.subheader("Enter Match Details")
+st.subheader("Select Players")
+
+players = sorted(pd.concat([df['player1'], df['player2']]).unique())
 
 col1, col2 = st.columns(2)
 
 with col1:
-    player1 = st.text_input("Player 1 Name", "Player A")
-    rank1 = st.number_input("Player 1 Rank", 1, 1000, 10)
+    player1 = st.selectbox("Player 1", players)
 
 with col2:
-    player2 = st.text_input("Player 2 Name", "Player B")
-    rank2 = st.number_input("Player 2 Rank", 1, 1000, 20)
+    player2 = st.selectbox("Player 2", players)
 
 surface = st.selectbox("Surface", ["Hard", "Clay", "Grass"])
+
+rank1 = df[df['player1'] == player1]['player1_rank'].mean()
+rank2 = df[df['player2'] == player2]['player2_rank'].mean()
+
+st.write(f"📊 {player1} Avg Rank: {round(rank1,2)}")
+st.write(f"📊 {player2} Avg Rank: {round(rank2,2)}")
 
 if st.button("Predict Winner"):
     surface_encoded = encoder.transform([surface])[0]
